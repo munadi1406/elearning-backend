@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OTP Email - e-verse</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    p {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="background-color: #007bff; border-radius: 10px; justify-content: center; align-items: center; display: flex; gap: 2px;">
+      <h2 style="color: white;">Selamat Datang di e-verse</h2>
+    </div>
+    <p>Kode Verifikasi Satu Kali (OTP) Anda:</p>
+    <h2>{{ otp }}</h2>
+    <p>Silakan gunakan kode ini untuk menyelesaikan proses verifikasi Anda. OTP ini hanya berlaku selama 10 menit.</p>
+    <p>Jika Anda tidak meminta OTP ini, silakan abaikan email ini.</p>
+    <p>Terima kasih telah menggunakan e-verse!</p>
+  </div>
+</body>
+</html>
