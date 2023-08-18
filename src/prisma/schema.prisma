@@ -95,8 +95,8 @@ model Post {
   id_users  Int       @db.Int
   judul     String    @db.VarChar(100)
   typePost  TypePost  
-  created_at DateTime @db.DateTime @default(now())
-  updated_at DateTime @db.DateTime @updatedAt
+  created_at DateTime @db.DateTime(6) @default(now())
+  updated_at DateTime @db.DateTime(6) @updatedAt @default(now())
   course    Course    @relation(fields: [id_course], references: [id_course], onDelete: Cascade)
   user      Users     @relation(fields: [id_users], references: [id_users], onDelete: Cascade)
 
@@ -121,8 +121,8 @@ model Tugas {
   id_tugas   Int    @id @default(autoincrement())
   id_post    Int       @db.Int
   deskripsi  String    @db.Text
-  fromDate   DateTime  @db.DateTime @default(now())
-  toDate     DateTime  @db.DateTime @default(now())
+  fromDate   DateTime  @db.DateTime(6) @default(now())
+  toDate     DateTime  @db.DateTime(6) @default(now())
   file       String    @db.VarChar(255)
   accept     AccetpType 
   post       Post      @relation(fields: [id_post], references: [id_post], onDelete: Cascade)
