@@ -5,7 +5,7 @@ import { createCourses, getDetailCourse, listCourseWhenUsersAsInstructor, listCo
 import { verifyTokenMiddleware } from '../middleware/jwtCheck'
 import { reqNewAccessToken } from '../controllers/jwtController'
 import { accessCourse } from '../middleware/accessCourse'
-import { downloadFileTugas, handleCreatePengumuman, handleCreateTugas, handleGetPost } from '../controllers/postController'
+import { downloadFileTugas, handleCreatePengumuman, handleCreateTugas, handleDetailPost, handleGetPost, handleSubmitTugas, handleUploadTugas } from '../controllers/postController'
 
 const route = express.Router()
 
@@ -29,9 +29,13 @@ route.delete('/course', verifyTokenMiddleware, reqDeleteCourse)
 
 
 
+
+route.get('/post/:idPost', verifyTokenMiddleware, handleDetailPost)
 route.get('/post/:idCourse/:idPost', verifyTokenMiddleware, accessCourse, handleGetPost)
 route.post('/pengumuman', verifyTokenMiddleware, accessCourse, handleCreatePengumuman)
+
 route.post('/tugas', verifyTokenMiddleware, handleCreateTugas)
+route.post('/tugas/submit', verifyTokenMiddleware, handleUploadTugas)
 
 
 route.get('/file/:idCourse/:fileName',downloadFileTugas)

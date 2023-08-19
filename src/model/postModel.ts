@@ -97,9 +97,9 @@ export const streamFile = async (id_course: string, fileName: string) => {
 };
 
 
-export const getPost = async (id_course:number, id_post: number) => {
+export const getPost = async (id_course: number, id_post: number) => {
     try {
-        const queryBuilder = prisma.post.findMany({
+        const getListPOst = prisma.post.findMany({
             select: {
                 id_post: true,
                 judul: true,
@@ -126,7 +126,7 @@ export const getPost = async (id_course:number, id_post: number) => {
             }
         });
 
-        const posts = await queryBuilder;
+        const posts = await getListPOst;
         let lastIdPost = null;
 
         if (posts.length > 0) {
@@ -138,3 +138,56 @@ export const getPost = async (id_course:number, id_post: number) => {
         throw error;
     }
 };
+
+export const getDetailPost = async (id_post: number, id_users: number) => {
+    try {
+        const checkType = await prisma.post.findFirst({ where: { id_post } });
+        if (checkType?.typePost === "Tugas") {
+            return await prisma.post.findFirst({
+                select: {
+                    id_post: true,
+                    judul: true,
+                    created_at: true,
+                    Tugas: {
+                        select: {
+                            deskripsi: true,
+                            fromDate:true,
+                            toDate:true,
+                            file:true,
+                            accept:true,
+                            tugasSubmission: {
+                                select: {
+                                    file: true,
+                                    submit_at:true,
+                                },
+                                where: {
+                                    id_user:
+                                        id_users
+                                }
+                            }
+                        }
+                    }
+                },
+                where: {
+                    id_post
+                }
+            })
+        } else if (checkType?.typePost === "Pengumuman") {
+            return await prisma.post.findFirst({
+                select: {
+                    id_post: true,
+                    judul: true,
+                    Pengumuman: { select: { konten: true } },
+                    created_at: true
+                },
+                where: {
+                    id_post
+                }
+            })
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+

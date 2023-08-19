@@ -1,8 +1,11 @@
+import { getDetailPost } from './../model/postModel';
 import { Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
 import { createPengumuman, createTugas, getPost, streamFile } from "../model/postModel";
 import uploadfileTugas from "../services/multerFileTugas";
 import { MulterError } from "multer";
+import { submitTugas } from '../model/tugasModel';
+import uploadTugasSubmission from '../services/multerUploadTugas';
 
 
 
@@ -124,15 +127,68 @@ export const handleGetPost = async (req: requestWithIdUsers, res: Response) => {
             const errorMessages = errors.array().map(error => error.msg);
             return res.status(400).json({ message: errorMessages });
         }
-        const {idCourse,idPost} = req.params
-        const data = await getPost(Number(idCourse),Number(idPost))
-        return res.status(200).json({statusCode:200,data})
+        const { idCourse, idPost } = req.params
+        const data = await getPost(Number(idCourse), Number(idPost))
+        return res.status(200).json({ statusCode: 200, data })
     } catch (error) {
         console.log(error);
         return errorResponse(res)
     }
 }
 
+
+export const handleDetailPost = async (req: requestWithIdUsers, res: Response) => {
+    try {
+        const idPost: number = Number(req.params.idPost)
+        const idUsers: number = Number(req.user)
+        console.log("running");
+        const data = await getDetailPost(idPost, idUsers);
+        console.log(data);
+        return res.status(200).json({ statusCode: 200, data });
+    } catch (error) {
+        console.log(error)
+        return errorResponse(res)
+    }
+}
+
+export const handleSubmitTugas = async (req: requestWithIdUsers, res: Response) => {
+    try {
+        const idUsers: number = Number(req.user)
+        const idTugas:number =Number(req.body.idTugas)
+        const file = req.file?.filename
+        const data = await submitTugas(idUsers, idTugas, `${file}`)
+        if (data?.status) {
+            return res.status(201).json({ statusCode: 200, data })
+        } else {
+            return res.status(400).json({ statusCode: 400, message: data?.message })
+        }
+    } catch (error) {
+        console.log(error);
+        return errorResponse(res)
+    }
+}
+
+
+
+export const handleUploadTugas = (req: Request, res: Response,) => {
+    console.log("running handle Upload tugas")
+    try {
+        uploadTugasSubmission(req, res, async (err: any) => {
+            if (err instanceof MulterError) {
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                    return res.status(400).json({ statusCode: 400, message: 'Ukuran file melebihi batas maksimum 5MB.' });
+                }
+            } else if (err) {
+                console.log({err})
+                return res.status(400).json({ statusCode: 400, message: 'File Harus Berupa Doc, Docx, ppt, pdf, pptx' });
+            }
+            handleSubmitTugas(req, res);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const errorResponse = (res: Response) => {
     return res.status(500).json({ statusCode: 500, message: "Internal Server Error" })
-  }
+}

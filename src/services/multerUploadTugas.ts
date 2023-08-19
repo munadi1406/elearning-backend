@@ -3,33 +3,35 @@ import fs from 'fs';
 import path from 'path';
 
 const storage = multer.diskStorage({
-    destination: (req: any, file, cb) => {
-        const uploadDir = `src/uploads/users/${req.user}`;
+    destination: (req:any, file, cb) => {
+        const idTugas = Number(req.body.idTugas);
+        const uploadDir = `src/uploads/tugas/${idTugas}/${req.user}`;
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);
-    },
+    },    
     filename: (req: any, file, cb) => {
-        const uniqueName = `${req.user}-${Date.now()}${path.extname(file.originalname)}`;
+        const fileName = file.originalname.split('.')
+        const uniqueName = `${req.user}-${file.originalname}`;
         cb(null, uniqueName);
     },
 });
-const upload: any = multer({
+const uploadTugasSubmission: any = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname).toLowerCase();
-        const allowedFileTypes = ['.png', '.jpg', '.jpeg', '.webp'];
+        const allowedFileTypes = ['.doc', '.docx', '.ppt', '.pdf','pptx'];
         
         if (allowedFileTypes.includes(ext)) {
             cb(null, true);
         } else {
-            cb(new Error('Foto Harus Berupa Png, jpg, jpeg, webp'));
+            cb(new Error('File Harus Berupa Doc, Docx, ppt, pdf, pptx'));
         }
     },
     limits: {
         fileSize: 5 * 1024 * 1024, // 5MB
     },
-}).single('image');
+}).single('file');
 
-export default upload;
+export default uploadTugasSubmission;

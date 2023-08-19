@@ -32,6 +32,7 @@ model Users {
   Course Course[]
   Course_member CourseMember[]
   Post Post[]
+  tugasSubmission TugasSubmission[]
 
   @@index([username], name: "idx_username")
   @@index([email], name: "idx_email")
@@ -126,4 +127,18 @@ model Tugas {
   file       String    @db.VarChar(255)
   accept     AccetpType 
   post       Post      @relation(fields: [id_post], references: [id_post], onDelete: Cascade)
+  tugasSubmission TugasSubmission[]
+}
+
+model TugasSubmission {
+  id_tugas_submission  Int @id @default(autoincrement())
+  id_tugas            Int @db.Int
+  id_user             Int @db.Int
+  submit_at           DateTime  @db.DateTime(6) @default(now())
+  updated_at          DateTime  @db.DateTime(6) @default(now())
+  file                String @db.VarChar(255)
+  tugas               Tugas @relation(fields: [id_tugas], references: [id_tugas], onDelete: Cascade)
+  user                Users @relation(fields: [id_user],references: [id_users],onDelete: Cascade)
+  @@index([id_user,id_tugas])
+  @@unique([id_tugas, id_user])
 }
