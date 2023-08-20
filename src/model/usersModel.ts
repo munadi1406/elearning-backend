@@ -54,7 +54,7 @@ export const login = async (email: string, passwordAuth: string): Promise<any> =
         const { password, id_users, role, username } = findUsers;
         const checkPasswordAuth = await checkPassword(passwordAuth, password)
         if (!checkPasswordAuth) return { status: false, message: "Password Yang Anda Masukkan Salah" }
-        const accesstoken = generateAccessToken({ id_users, role, username })
+        const accessToken = generateAccessToken({ id_users, role, username })
         const refreshToken = generateRefreshToken({ id_users, role, username })
 
         await prisma.users.update({
@@ -65,7 +65,7 @@ export const login = async (email: string, passwordAuth: string): Promise<any> =
                 refresh_token: refreshToken
             }
         })
-        return { status: true, message: "Login Berhasil", data: { accesstoken, refreshToken } }
+        return { status: true, message: "Login Berhasil", data: { accessToken, refreshToken } }
     } catch (error) {
         throw error;
     }

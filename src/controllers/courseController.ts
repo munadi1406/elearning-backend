@@ -11,7 +11,7 @@ export const createCourses = async (req: requestWithIdUsers, res: Response) => {
         body('course')
             .notEmpty().withMessage("Masukkan Nama Course")
             .isAscii()
-            .isLength({ min: 6, max: 40 }).withMessage("Nama Course Minimal 6 Karakter dan maksimal 40 karakter")
+            .isLength({ min: 6, max: 255 }).withMessage("Nama Course Minimal 6 Karakter")
             .isString().withMessage("Nama Harus Berupa String"),
         body('desc_course')
             .notEmpty().withMessage('Masukkan Deskripsi Course')
@@ -66,7 +66,7 @@ export const listCourseWhenUsersAsInstructor = async (req: requestWithIdUsers, r
             return res.status(400).json({ message: errorMessages });
         }
         const id_users = Number(req.user)
-        const id_course = Number(req.params.idUsers)
+        const id_course = Number(req.params.idCourse)
         const data = await getCourseByIdUsers(id_users, id_course)
         return res.status(200).json({ data });
     } catch (error) {
@@ -88,7 +88,7 @@ export const listCourseWhenUsersAsMember = async (req: requestWithIdUsers, res: 
             return res.status(400).json({ message: errorMessages });
         }
         const id_users = Number(req.user)
-        const id_course = Number(req.params.idUsers)
+        const id_course = Number(req.params.idCourse)
         const data = await getCourseWhenUserAsMember(id_users, id_course)
         return res.status(200).json({ data });
     } catch (error) {

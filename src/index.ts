@@ -1,12 +1,14 @@
 import express, { Application } from 'express';
 import route from './routes/route';
 import "dotenv/config.js"
+import cors from 'cors'
 
 
 
 
 
 const app: Application = express();
+app.use(cors({credentials:true,origin:"*"}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

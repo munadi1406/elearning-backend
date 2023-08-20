@@ -55,7 +55,7 @@ model Otp {
 model Course {
   id_course    Int        @id @default(autoincrement())
   id_users     Int        @db.Int
-  course       String     @db.VarChar(40)
+  course       String     @db.VarChar(255)
   desc_course  String     @db.Text
   academy      String     @db.VarChar(100)
   course_code  String     @db.VarChar(50)

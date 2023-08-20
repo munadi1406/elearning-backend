@@ -36,6 +36,7 @@ export const createCourse = async (data: any) => {
 };
 
 // mendapatkan list course yang dia buat
+// idcourse digunakan untuk lazy load 
 export const getCourseByIdUsers = async (id_users: number , id_course: number ) => {
     try {
         const courses = await prisma.course.findMany({
@@ -54,7 +55,6 @@ export const getCourseByIdUsers = async (id_users: number , id_course: number ) 
             take: 10,
             orderBy: { created_at: 'desc' },
         });
-
         let lastIdCourse = null;
         if (courses.length > 0) {
             lastIdCourse = courses[courses.length - 1].id_course;
@@ -75,6 +75,7 @@ export const detailCourse = async (id_users: number, id_course: number) => {
             course:true,
             desc_course:true,
             academy:true,
+            course_code:true,
             created_at:true,
             user:{select:{username:true}},
             CourseMember:{
