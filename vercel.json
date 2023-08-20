@@ -8,7 +8,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "./vercel/output/index.js"
+      "dest": "./dist/index.js"
     }
   ]
 }
