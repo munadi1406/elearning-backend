@@ -150,6 +150,7 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
                     created_at: true,
                     Tugas: {
                         select: {
+                            id_tugas:true,
                             deskripsi: true,
                             fromDate:true,
                             toDate:true,
