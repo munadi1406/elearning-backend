@@ -12,6 +12,10 @@ app.use(cors({credentials:true,origin:"*"}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+    res.send("oke coy")
+  });
+
 app.use('/api/',route)
 
 const port: number = 3000;
