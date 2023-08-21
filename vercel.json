@@ -1,7 +1,5 @@
 {
   "version": 2,
-
-  "rewrites": [{ "source": "/dist/(.*)", "destination": "/dist" }],
   "routes": [
     {
       "src": "/(.*)",
