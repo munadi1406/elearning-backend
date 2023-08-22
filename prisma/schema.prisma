@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://munadi1406:munadi1406!@db4free.net:3306/portalberita?schema=public"
+  url      = "mysql://munadi1406:munadi1406!@db4free.net:3306/portalberita?connection_limit=5"
 }
 enum Role {
   admin
