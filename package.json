@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.ts",
-    "build": "prisma db pull && tsc",
+    "build": "tsc",
     "start": "prisma generate && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
