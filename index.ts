@@ -12,9 +12,19 @@ app.use(cors({credentials:true,origin:"*"}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+try {
+  await prisma.$connect();
+  console.log('Terhubung ke database.');
+} catch (error) {
+  console.error('Gagal terhubung ke database:', error);
+} finally {
+  await prisma.$disconnect();
+}
+
 app.get('/', (req, res) => {
     res.send("oke coy")
   });
+
 
 app.use('/api/',route)
 
