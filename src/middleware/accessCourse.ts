@@ -13,7 +13,6 @@ export const accessCourse = async (req: requestWithIdUsers, res: Response, next:
     }
 
     const checkIsMember = await checkMemberInCourse(idUsers, idCourse);
-
     if (!checkIsMember) {
         return res.status(403).json({ statusCode: 403, message: 'Forbidden' });
     }

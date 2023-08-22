@@ -1,4 +1,4 @@
-import { getDetailPost } from './../model/postModel';
+import { deletePost, getDetailPost } from './../model/postModel';
 import { Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
 import { createPengumuman, createTugas, getPost, streamFile } from "../model/postModel";
@@ -158,7 +158,7 @@ export const handleSubmitTugas = async (req: requestWithIdUsers, res: Response) 
         const file = req.file?.filename
         const data = await submitTugas(idUsers, idTugas, `${file}`)
         if (data?.status) {
-            return res.status(201).json({ statusCode: 200, data })
+            return res.status(201).json({ statusCode: 201, data })
         } else {
             return res.status(400).json({ statusCode: 400, message: data?.message })
         }
@@ -188,6 +188,23 @@ export const handleUploadTugas = (req: Request, res: Response,) => {
         console.log(error);
     }
 }
+
+export const handleDeletePost = async (req:requestWithIdUsers,res:Response)=>{
+    try {
+        const idPost = Number(req.body.idPost)
+        const idUsers = Number(req.user)
+        const onDelete = await deletePost(idPost,idUsers)
+        if(onDelete?.status){
+            return res.status(200).json({statusCode:200,message:onDelete.message})
+        }else{
+            return res.status(400).json({statusCode:400,message:onDelete.message})
+        }
+    } catch (error) {
+        console.log(error);
+        return errorResponse(res)
+    }
+}
+
 
 const errorResponse = (res: Response) => {
     return res.status(500).json({ statusCode: 500, message: "Internal Server Error" })

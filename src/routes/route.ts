@@ -5,7 +5,7 @@ import { createCourses, getDetailCourse, listCourseWhenUsersAsInstructor, listCo
 import { verifyTokenMiddleware } from '../middleware/jwtCheck'
 import { reqNewAccessToken } from '../controllers/jwtController'
 import { accessCourse } from '../middleware/accessCourse'
-import { downloadFileTugas, handleCreatePengumuman, handleCreateTugas, handleDetailPost, handleGetPost, handleSubmitTugas, handleUploadTugas } from '../controllers/postController'
+import { downloadFileTugas, handleCreatePengumuman, handleCreateTugas, handleDeletePost, handleDetailPost, handleGetPost, handleSubmitTugas, handleUploadTugas } from '../controllers/postController'
 
 const route = express.Router()
 
@@ -33,6 +33,7 @@ route.delete('/course', verifyTokenMiddleware, reqDeleteCourse)
 route.get('/post/:idPost', verifyTokenMiddleware, handleDetailPost)
 route.get('/post/:idCourse/:idPost', verifyTokenMiddleware, accessCourse, handleGetPost)
 route.post('/pengumuman', verifyTokenMiddleware, accessCourse, handleCreatePengumuman)
+route.delete('/post',verifyTokenMiddleware,handleDeletePost)
 
 route.post('/tugas', verifyTokenMiddleware, handleCreateTugas)
 route.post('/tugas/submit', verifyTokenMiddleware, handleUploadTugas)

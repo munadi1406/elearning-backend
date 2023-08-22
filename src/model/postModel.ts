@@ -53,11 +53,14 @@ interface ITugas extends IPost {
 
 export const createTugas = async (dataPayload: ITugas) => {
     try {
-        const checkUsersIsMember = await checkMemberInCourse(dataPayload.id_users, dataPayload.id_course);
-        if (!checkUsersIsMember) {
+        const checkIsAuthor = await prisma.course.findFirst({where:{
+            id_users:dataPayload.id_users,
+            id_course:dataPayload.id_course,
+        }});
+        if (!checkIsAuthor) {
             throw new Error('Anda Bukan Anggota Course Ini');
         }
-        const date = new Date();
+        const date = new Date().toLocaleString();
         const insertPost = await prisma.post.create({
             data: {
                 id_course: dataPayload.id_course,
@@ -150,16 +153,16 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
                     created_at: true,
                     Tugas: {
                         select: {
-                            id_tugas:true,
+                            id_tugas: true,
                             deskripsi: true,
-                            fromDate:true,
-                            toDate:true,
-                            file:true,
-                            accept:true,
+                            fromDate: true,
+                            toDate: true,
+                            file: true,
+                            accept: true,
                             tugasSubmission: {
                                 select: {
                                     file: true,
-                                    submit_at:true,
+                                    submit_at: true,
                                 },
                                 where: {
                                     id_user:
@@ -192,3 +195,27 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
 }
 
 
+export const deletePost = async (id_post: number, id_users: number) => {
+    try {
+        const checkStatus = await prisma.post.findFirst({
+            where: {
+                id_post
+            }
+        })
+        const checkStatusAuthor = await prisma.course.findFirst({
+            where: {
+                id_course: checkStatus?.id_course,
+                id_users
+            }
+        })
+        console.log(checkStatus)
+        console.log(checkStatusAuthor)
+        if (!checkStatusAuthor) {
+            return { status: false, message: "Anda Tidak Memiliki Akses Ke Course Ini" }
+        }
+        await prisma.post.delete({ where: { id_post } })
+        return {status:true,message:"Postingan Berhasil Di Hapus"};
+    } catch (error) {
+        throw error;
+    }
+}
