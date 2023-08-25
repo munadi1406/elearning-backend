@@ -15,6 +15,9 @@ export const Pengumuman = sequelize.define('Pengumuman', {
     konten: {
         type: DataTypes.TEXT,
     },
+},{
+    tableName: 'pengumuman',
+    timestamps:false,
 });
 
 Pengumuman.belongsTo(Post, {
@@ -22,3 +25,8 @@ Pengumuman.belongsTo(Post, {
     onDelete: 'CASCADE',
     as: 'post', // Gantilah dengan nama asosiasi yang Anda inginkan
 });
+Post.hasMany(Pengumuman, {
+    foreignKey: 'id_post',
+    as: 'pengumuman',
+});
+

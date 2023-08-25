@@ -20,7 +20,6 @@ import { TugasSubmission } from "./schema/TugasSubmition";
         id_course:getIdCourse.id_course,
         status_member:"member"
       }})
-  
       if (!getIdPost || !checkMember) {
         deleteFileIfUploadFailed(id_tugas, id_users, file);
         return { status: false, message: 'Anda Tidak Bisa Mengirim Tugas' };
@@ -39,14 +38,14 @@ import { TugasSubmission } from "./schema/TugasSubmition";
   
       if (fileExt !== fileType.toLowerCase()) {
         deleteFileIfUploadFailed(id_tugas, id_users, file);
-        return { status: false, message: 'File Yang Anda Upload Tidak Sesuai dengan Yang diminta' };
+        return { status: false, message: `File Yang Anda Upload Tidak Sesuai dengan Yang diminta, File Yang Di Minta ${fileType}` };
       }
   
       // Simpan pengumpulan tugas ke dalam database
       await TugasSubmission.create({
-        id_tugas,
+        id_tugas, 
         id_user: id_users,
-        file,
+        file, 
       });
   
       return { status: true, message: 'Tugas Berhasil Dikirim' };
@@ -55,7 +54,7 @@ import { TugasSubmission } from "./schema/TugasSubmition";
       throw error;
     }
   };
-
+ 
 
 const deleteFileIfUploadFailed = (id_tugas: number, id_users: number, file: string) => {
     const filePath = join(__dirname, `../uploads/tugas/${id_tugas}/${id_users}/${file}`);

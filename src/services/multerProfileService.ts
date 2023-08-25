@@ -4,7 +4,7 @@ import path from 'path';
 
 const storage = multer.diskStorage({
     destination: (req: any, file, cb) => {
-        const uploadDir = `src/uploads/users/${req.user}`;
+        const uploadDir = path.join(__dirname, `../uploads/users/${req.user}`);
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }

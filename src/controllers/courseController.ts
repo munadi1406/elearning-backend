@@ -149,7 +149,7 @@ export const reqJoinCourse = async (req: requestWithIdUsers, res: Response) => {
 
 export const reqDeleteCourse = async (req: requestWithIdUsers, res: Response) => {
     const authValidationRules = [
-        body('idCourse')
+        param('idCourse')
             .notEmpty().withMessage('Masukkan Kode Course ')
             .isInt().withMessage("Course Code Tidak Valid"),
     ]
@@ -160,7 +160,7 @@ export const reqDeleteCourse = async (req: requestWithIdUsers, res: Response) =>
             const errorMessages = errors.array().map(error => error.msg);
             return res.status(400).json({ message: errorMessages });
         }
-        const idCourse = Number(req.body.idCourse)
+        const idCourse = Number(req.params.idCourse)
         const idUsers = Number(req.user);
         const deleteCourses = await deleteCourse(idCourse,idUsers)
         if(deleteCourses.status){

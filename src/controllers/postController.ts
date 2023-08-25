@@ -56,7 +56,7 @@ export const handleInsertTugas = async (req: requestWithIdUsers, res: Response) 
             .notEmpty().withMessage('Masukkan Tanggal Berakhir Tugas'),
         body('accept')
             .notEmpty().withMessage('Masukkan Accept')
-            .isIn(["doc", "pdf", "ppt","docx","zip","rar"]).withMessage("Accept Tidak Valid"),
+            .isIn(["doc", "pdf", "ppt","docx","zip","rar","pptx"]).withMessage("Accept Tidak Valid"),
     ]
     try {
         await Promise.all(authValidationRules.map(validationRule => validationRule.run(req)));
@@ -172,7 +172,7 @@ export const handleSubmitTugas = async (req: requestWithIdUsers, res: Response) 
 
 export const handleUploadTugas = (req: Request, res: Response,) => {
     console.log("running handle Upload tugas")
-    try {
+    try { 
         uploadTugasSubmission(req, res, async (err: any) => {
             if (err instanceof MulterError) {
                 if (err.code === 'LIMIT_FILE_SIZE') {
@@ -180,7 +180,7 @@ export const handleUploadTugas = (req: Request, res: Response,) => {
                 }
             } else if (err) {
                 console.log({err})
-                return res.status(400).json({ statusCode: 400, message: 'File Harus Berupa Doc, Docx, ppt, pdf, pptx' });
+                return res.status(400).json({ statusCode: 400, message: 'File Harus Berupa Doc, Docx, ppt, pdf, pptx, rar, zip' });
             }
             handleSubmitTugas(req, res);
         });
@@ -191,7 +191,7 @@ export const handleUploadTugas = (req: Request, res: Response,) => {
 
 export const handleDeletePost = async (req:requestWithIdUsers,res:Response)=>{
     try {
-        const idPost = Number(req.body.idPost)
+        const idPost = Number(req.params.idPost)
         const idUsers = Number(req.user)
         const onDelete = await deletePost(idPost,idUsers)
         if(onDelete?.status){

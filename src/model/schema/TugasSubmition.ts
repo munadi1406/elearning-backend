@@ -23,6 +23,9 @@ export const TugasSubmission = sequelize.define('TugasSubmission', {
 }, {
     tableName: 'tugassubmission', // Sesuaikan dengan nama tabel yang Anda gunakan
     timestamps: true, // Sesuaikan dengan kebutuhan Anda
-    underscored: true, // Jika menggunakan snake_case untuk nama kolom dalam tabel
 });
 TugasSubmission.belongsTo(Tugas, { foreignKey: "id_tugas", onDelete: "cascade" })
+Tugas.hasMany(TugasSubmission, {
+    foreignKey: 'id_tugas',
+    as: 'tugassubmission',
+});

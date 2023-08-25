@@ -5,14 +5,13 @@ import path from 'path';
 const storage = multer.diskStorage({
     destination: (req:any, file, cb) => {
         const idTugas = Number(req.body.idTugas);
-        const uploadDir = `src/uploads/tugas/${idTugas}/${req.user}`;
+        const uploadDir = path.join(__dirname, `../uploads/tugas/${idTugas}/${req.user}`);
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);
     },    
     filename: (req: any, file, cb) => {
-        const fileName = file.originalname.split('.')
         const uniqueName = `${req.user}-${file.originalname}`;
         cb(null, uniqueName);
     },
@@ -21,7 +20,7 @@ const uploadTugasSubmission: any = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname).toLowerCase();
-        const allowedFileTypes = ['.doc', '.docx', '.ppt', '.pdf','pptx'];
+        const allowedFileTypes = ['.doc', '.docx', '.ppt', '.pdf','.pptx','.rar','.zip'];
         
         if (allowedFileTypes.includes(ext)) {
             cb(null, true);

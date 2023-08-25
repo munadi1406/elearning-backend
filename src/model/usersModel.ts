@@ -66,7 +66,7 @@ export const login = async (email: string, passwordAuth: string): Promise<any> =
             return { status: false, message: "Akun Tidak Ditemukan" };
         }
 
-        const { password, id_users, role, username } = findUsers;
+        const { password, id_users, role, username,image } = findUsers;
 
         // Memeriksa apakah password sesuai
         const checkPasswordAuth = await checkPassword(passwordAuth, password);
@@ -76,7 +76,7 @@ export const login = async (email: string, passwordAuth: string): Promise<any> =
         }
         // Generate access token dan refresh token
         const accessToken = generateAccessToken({ id_users, role, username });
-        const refreshToken = generateRefreshToken({ id_users, role, username });
+        const refreshToken = generateRefreshToken({ id_users, role, username,image });
 
         // Update refresh token pada pengguna
         await Users.update(
@@ -168,6 +168,7 @@ export const streamImage = async (id_users: string, imageName: string) => {
         }
         return createReadStream(imagePath);
     } catch (error) {
+      console.log(error)
         throw error;
     }
 };

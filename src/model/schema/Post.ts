@@ -2,6 +2,8 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db";
 import { Users } from "./Users";
 import { Course } from "./Course";
+import { Pengumuman } from "./Pengumuman";
+import { Tugas } from "./Tugas";
 
 export const Post = sequelize.define('Post', {
     id_post: {

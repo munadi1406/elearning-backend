@@ -4,7 +4,7 @@ import path from 'path';
 
 const storage = multer.diskStorage({
     destination: (req: any, file, cb) => {
-        const uploadDir = `src/uploads/course/${req.body.idCourse}`;
+        const uploadDir = path.join(__dirname, `../uploads/course/${req.body.idCourse}`);
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -20,7 +20,7 @@ const uploadfileTugas: any = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname).toLowerCase();
-        const allowedFileTypes = ['.doc', '.docx', '.ppt', '.pdf','pptx'];
+        const allowedFileTypes = ['.doc', '.docx', '.ppt', '.pdf','.pptx','.rar','.zip'];
         
         if (allowedFileTypes.includes(ext)) {
             cb(null, true);

@@ -3,6 +3,9 @@ import { Course } from "./schema/Course";
 import { CourseMember } from "./schema/CourseMember";
 import { Op, QueryTypes } from "sequelize";
 import { sequelize } from "../config/db";
+import { existsSync } from "fs";
+import { rimraf } from "rimraf";
+import { join } from "path";
 
 export const createCourse = async (data: any) => {
     const t = await sequelize.transaction()
@@ -67,14 +70,14 @@ export const getCourseByIdUsers = async (id_users: number, id_course: number) =>
     }
 };
 
-
-export const detailCourse = async (id_users: number, id_course: number) => {
-    try {
         Course.hasMany(CourseMember, {
             foreignKey: 'id_course',
             sourceKey: 'id_course',
             as: 'member',
         });
+
+export const detailCourse = async (id_users: number, id_course: number) => {
+    try {
         const courseDetails = await Course.findOne({
             attributes: ['id_course', 'course', 'desc_course', 'academy', 'course_code', 'createdAt'],
             include: [
@@ -121,6 +124,11 @@ export const deleteCourse = async (id_course: number, id_users: number) => {
         await Course.destroy({
             where: { id_course },
         });
+
+        const courseFileLink = join(__dirname,`../uploads/course/${id_course}`)
+        if(existsSync(courseFileLink)){
+            rimraf(courseFileLink)
+        }
 
         return { status: true, message: "Course Berhasil Di Hapus" };
     } catch (error) {
@@ -175,11 +183,6 @@ export const joinCourse = async (id_users: number, course_code: string) => {
 
 export const getCourseWhenUserAsMember = async (id_users: number, id_course: number) => {
     try {
-        Course.hasMany(CourseMember, {
-            foreignKey: 'id_course',
-            sourceKey: 'id_course',
-            as: 'courseMembers',
-        });
         const courses = await Course.findAll({
             attributes: ['id_course', 'course', 'desc_course', 'academy', 'course_code'],
             include: [
@@ -191,7 +194,7 @@ export const getCourseWhenUserAsMember = async (id_users: number, id_course: num
                 {
                     model: CourseMember,
                     required: true,
-                    as: 'courseMembers',
+                    as: 'member',
                     where: {
                         id_users,
                         status_member: "member",

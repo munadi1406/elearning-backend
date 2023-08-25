@@ -25,7 +25,7 @@ route.get('/course/:idCourse', verifyTokenMiddleware, listCourseWhenUsersAsInstr
 route.get('/course/member/:idCourse', verifyTokenMiddleware, listCourseWhenUsersAsMember)
 route.get('/course/detail/:idCourse', verifyTokenMiddleware, accessCourse, getDetailCourse)
 route.post('/course/join', verifyTokenMiddleware, reqJoinCourse)
-route.delete('/course', verifyTokenMiddleware, reqDeleteCourse)
+route.delete('/course/:idCourse', verifyTokenMiddleware, reqDeleteCourse)
 
 
 
@@ -33,11 +33,11 @@ route.delete('/course', verifyTokenMiddleware, reqDeleteCourse)
 route.get('/post/:idPost', verifyTokenMiddleware, handleDetailPost)
 route.get('/post/:idCourse/:idPost', verifyTokenMiddleware, accessCourse, handleGetPost)
 route.post('/pengumuman', verifyTokenMiddleware, accessCourse, handleCreatePengumuman)
-route.delete('/post',verifyTokenMiddleware,handleDeletePost)
+route.delete('/post/:idPost',verifyTokenMiddleware,handleDeletePost)
 
 route.post('/tugas', verifyTokenMiddleware, handleCreateTugas)
 route.post('/tugas/submit', verifyTokenMiddleware, handleUploadTugas)
 
 
 route.get('/file/:idCourse/:fileName',downloadFileTugas)
-export default route;
+export default route; 

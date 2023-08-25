@@ -25,11 +25,16 @@ export const Tugas = sequelize.define('Tugas', {
         type: DataTypes.STRING(255),
     },
     accept: {
-        type: DataTypes.ENUM('pdf', 'docx','docx','ppt','rar','zip'),
+        type: DataTypes.ENUM('pdf', 'doc','docx','ppt','rar','zip','pptx'),
         allowNull:false
     },
 }, {
     timestamps: false,
     tableName: 'tugas', // Gantilah 'tugas' dengan nama tabel yang sesuai
 });
-Tugas.belongsTo(Post, { foreignKey: "id_tugas", onDelete: "cascade" })
+Tugas.belongsTo(Post, { foreignKey: "id_post", onDelete: "cascade" })
+
+Post.hasMany(Tugas, {
+    foreignKey: 'id_post',
+    as: 'tugas',
+});
