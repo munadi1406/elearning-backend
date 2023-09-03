@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db";
 import { Post } from "./Post";
 
-export const Pengumuman = sequelize.define('Pengumuman', {
+export const Pengumuman = sequelize.define('pengumuman', {
     id_pengumuman: {
         type: DataTypes.INTEGER,
         primaryKey: true,

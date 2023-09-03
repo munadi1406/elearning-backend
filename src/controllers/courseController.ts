@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createCourse, deleteCourse, detailCourse, getCourseByIdUsers, getCourseWhenUserAsMember, joinCourse } from "../model/courseModel";
+import { createCourse, deleteCourse, detailCourse, getCourseByIdUsers, getCourseWhenUserAsMember, joinCourse, listMemberInCourse } from "../model/courseModel";
 import { body, param, validationResult } from "express-validator";
 
 interface requestWithIdUsers extends Request {
@@ -167,6 +167,33 @@ export const reqDeleteCourse = async (req: requestWithIdUsers, res: Response) =>
             return res.status(200).json({statusCode:200,message:deleteCourses.message})
         }else{
             return res.status(403).json({statusCode:403,message:deleteCourses.message})
+        }
+    } catch (error) {
+        console.log(error)
+        return errorResponse(res)
+    }
+}
+
+
+export const handleListMemberInCouse = async (req: requestWithIdUsers, res: Response) => {
+    const authValidationRules = [
+        param('idCourse')
+            .isInt().withMessage("Id Course Harus Berupa Angka"),
+    ]
+    try {
+        await Promise.all(authValidationRules.map(validationRule => validationRule.run(req)));
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return res.status(400).json({ message: errorMessages });
+        }
+        const idCourse: number = Number(req.params.idCourse);
+        const idMember:number = Number(req.params.idMember);
+        const data = await listMemberInCourse(idCourse,idMember)
+        if(data.status){
+            return res.status(200).json({ statusCode: 200, data:data?.data })
+        }else{
+            return res.status(404).json({statusCode:404,data:data.data})
         }
     } catch (error) {
         console.log(error)

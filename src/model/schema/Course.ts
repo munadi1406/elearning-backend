@@ -3,7 +3,7 @@ import { sequelize } from "../../config/db";
 import { Users } from "./Users";
 import { CourseMember } from "./CourseMember";
 
-export const Course: any = sequelize.define('Course', {
+export const Course: any = sequelize.define('course', {
     id_course: {
         type: DataTypes.INTEGER,
         primaryKey: true,

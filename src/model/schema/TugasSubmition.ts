@@ -1,8 +1,9 @@
 import { DataTypes } from "sequelize";
 import { Tugas } from "./Tugas";
 import { sequelize } from "../../config/db";
+import { Users } from "./Users";
 
-export const TugasSubmission = sequelize.define('TugasSubmission', {
+export const TugasSubmission = sequelize.define('tugassubmission', {
     id_tugas_submission: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -25,6 +26,7 @@ export const TugasSubmission = sequelize.define('TugasSubmission', {
     timestamps: true, // Sesuaikan dengan kebutuhan Anda
 });
 TugasSubmission.belongsTo(Tugas, { foreignKey: "id_tugas", onDelete: "cascade" })
+TugasSubmission.belongsTo(Users, { foreignKey: "id_user", onDelete: "cascade" ,as:'users'})
 Tugas.hasMany(TugasSubmission, {
     foreignKey: 'id_tugas',
     as: 'tugassubmission',

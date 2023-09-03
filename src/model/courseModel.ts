@@ -1,11 +1,13 @@
 import { Users } from "./schema/Users";
 import { Course } from "./schema/Course";
 import { CourseMember } from "./schema/CourseMember";
-import { Op, QueryTypes } from "sequelize";
+import { Op, QueryTypes, col } from "sequelize";
 import { sequelize } from "../config/db";
 import { existsSync } from "fs";
 import { rimraf } from "rimraf";
 import { join } from "path";
+import { Post } from "./schema/Post";
+import { Tugas } from "./schema/Tugas";
 
 export const createCourse = async (data: any) => {
     const t = await sequelize.transaction()
@@ -70,11 +72,11 @@ export const getCourseByIdUsers = async (id_users: number, id_course: number) =>
     }
 };
 
-        Course.hasMany(CourseMember, {
-            foreignKey: 'id_course',
-            sourceKey: 'id_course',
-            as: 'member',
-        });
+Course.hasMany(CourseMember, {
+    foreignKey: 'id_course',
+    sourceKey: 'id_course',
+    as: 'member',
+});
 
 export const detailCourse = async (id_users: number, id_course: number) => {
     try {
@@ -90,7 +92,7 @@ export const detailCourse = async (id_users: number, id_course: number) => {
                     model: CourseMember,
                     attributes: ['status_member'],
                     as: 'member',
-                    required:true,
+                    required: true,
                     where: {
                         id_users,
                     },
@@ -111,6 +113,7 @@ export const deleteCourse = async (id_course: number, id_users: number) => {
     try {
         // Cek apakah pengguna memiliki akses ke kursus ini
         const checkAuthor = await Course.findOne({
+            attributes: ['id_course'],
             where: {
                 id_course,
                 id_users,
@@ -121,12 +124,31 @@ export const deleteCourse = async (id_course: number, id_users: number) => {
             return { status: false, message: "Anda Tidak Memiliki Akses Ke Course Ini" };
         }
 
+        const getAllPostFile = await Post.findAll({
+            attributes: [[col('tugas.id_tugas'), 'id_tugas']],
+            include: {
+                model: Tugas,
+                attributes: [],
+                as: 'tugas',
+            },
+            where: {
+                id_course
+            },
+            raw: true,
+        })
+
+        console.log(getAllPostFile);
+
+        getAllPostFile.map((e:any) => (
+            deleteAllFileTugas(e.id_tugas)
+        ))
+
         await Course.destroy({
             where: { id_course },
         });
 
-        const courseFileLink = join(__dirname,`../uploads/course/${id_course}`)
-        if(existsSync(courseFileLink)){
+        const courseFileLink = join(__dirname, `../uploads/course/${id_course}`)
+        if (existsSync(courseFileLink)) {
             rimraf(courseFileLink)
         }
 
@@ -218,6 +240,36 @@ export const getCourseWhenUserAsMember = async (id_users: number, id_course: num
     }
 };
 
+export const listMemberInCourse = async (id_course: number, id_member: number) => {
+    try {
+        const data = await CourseMember.findAll({
+            attributes: ['id_member', 'status_member'],
+            include: [
+                {
+                    model: Users,
+                    attributes: ['username', 'phoneNumber'],
+                    as: 'users',
+                },
+            ],
+            where: {
+                id_course,
+                ...(id_member > 0 ? { id_member: { [Op.gt]: id_member } } : {})
+            },
+            orderby: [['id_member', 'asc']]
+        })
+
+        let lastIdMember = null;
+        if (data.length > 0) {
+            lastIdMember = data[data.length - 1].id_member;
+        }
+
+        return { status: true, data: { lastIdMember, dataMember: data } }
+
+    } catch (error) {
+        throw error
+    }
+}
+
 export const checkMemberInCourse = async (id_users: number, id_course: number) => {
     try {
         const check = await CourseMember.findOne({
@@ -232,3 +284,11 @@ export const checkMemberInCourse = async (id_users: number, id_course: number) =
         throw error;
     }
 };
+
+
+const deleteAllFileTugas = async (idTugas: number) => {
+    const linkFileTugasSubmit = join(__dirname, `../uploads/tugas/${idTugas}`)
+    if (existsSync(linkFileTugasSubmit)) {
+        await rimraf(linkFileTugasSubmit)
+    }
+}

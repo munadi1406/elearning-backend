@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db";
 import { Post } from "./Post";
 
-export const Tugas = sequelize.define('Tugas', {
+export const Tugas = sequelize.define('tugas', {
     id_tugas: {
         type: DataTypes.INTEGER,
         primaryKey: true,

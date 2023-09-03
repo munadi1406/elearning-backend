@@ -9,7 +9,7 @@ import uploadTugasSubmission from '../services/multerUploadTugas';
 
 
 
-interface requestWithIdUsers extends Request {
+export interface requestWithIdUsers extends Request {
     user?: number;
 }
 export const handleCreatePengumuman = async (req: requestWithIdUsers, res: Response) => {
@@ -69,9 +69,9 @@ export const handleInsertTugas = async (req: requestWithIdUsers, res: Response) 
         const fileName = req.file?.filename
         const data = await createTugas({ id_users: Number(req.user), id_course: Number(idCourse), deskripsi, fromDate, toDate, accept, file: fileName })
         if (data) {
-            return res.status(200).json({ statusCode: 200, message: data })
+            return res.status(200).json({ statusCode: 200, message: "Tugas Berhasil Di Buat" })
         } else {
-            return res.status(404).json({ statusCode: 404, message: data })
+            return res.status(404).json({ statusCode: 404, message: "Tugas Gagal Di Buat" })
         }
     } catch (error) {
         console.log(error);
@@ -141,9 +141,7 @@ export const handleDetailPost = async (req: requestWithIdUsers, res: Response) =
     try {
         const idPost: number = Number(req.params.idPost)
         const idUsers: number = Number(req.user)
-        console.log("running");
         const data = await getDetailPost(idPost, idUsers);
-        console.log(data);
         return res.status(200).json({ statusCode: 200, data });
     } catch (error) {
         console.log(error)
@@ -206,6 +204,6 @@ export const handleDeletePost = async (req:requestWithIdUsers,res:Response)=>{
 }
 
 
-const errorResponse = (res: Response) => {
+export const errorResponse = (res: Response) => {
     return res.status(500).json({ statusCode: 500, message: "Internal Server Error" })
 }

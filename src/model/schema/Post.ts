@@ -2,10 +2,8 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db";
 import { Users } from "./Users";
 import { Course } from "./Course";
-import { Pengumuman } from "./Pengumuman";
-import { Tugas } from "./Tugas";
 
-export const Post = sequelize.define('Post', {
+export const Post = sequelize.define('post', {
     id_post: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -39,5 +37,9 @@ export const Post = sequelize.define('Post', {
         },
     ],
 });
-Post.belongsTo(Users, { foreignKey: "id_users", onDelete: "Cascade" })
+Post.belongsTo(Users, { foreignKey: "id_users", onDelete: "Cascade", as:"users" })
 Post.belongsTo(Course, { foreignKey: "id_course", onDelete: "cascade" })
+Course.hasMany(Post, {
+    foreignKey: 'id_course',
+    as: 'post',
+});

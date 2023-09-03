@@ -1,6 +1,6 @@
 import { compare, hash } from 'bcrypt'
 
-export const encryptPassword = async (password: string): Promise<string> => {
+export const encryptPassword = (password: string): Promise<string> => {
     const salt = 10;
     return hash(password, salt);
 }

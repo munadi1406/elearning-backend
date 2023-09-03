@@ -1,7 +1,8 @@
 import { sequelize } from "../../config/db";
 import { DataTypes, } from "sequelize";
+import { TugasSubmission } from "./TugasSubmition";
 
-export const Users = sequelize.define('Users', {
+export const Users = sequelize.define('users', {
     id_users: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -37,19 +38,21 @@ export const Users = sequelize.define('Users', {
         defaultValue: 'inactive',
     },
 
-},
-
-    {
-        freezeTableName: true, // Agar nama tabel tetap 'users'
-        indexes: [
-            {
-                unique: true,
-                fields: ['email'],
-                name: 'idx_email',
-            },
-            {
-                fields: ['username'],
-                name: 'idx_username',
-            },
-        ],
-    });
+}, {
+    freezeTableName: true, // Agar nama tabel tetap 'users'
+    indexes: [
+        {
+            unique: true,
+            fields: ['email'],
+            name: 'idx_email',
+        },
+        {
+            fields: ['username'],
+            name: 'idx_username',
+        },
+        {
+            fields: ['status'],
+            name: 'idx_status',
+        },
+    ],
+});
