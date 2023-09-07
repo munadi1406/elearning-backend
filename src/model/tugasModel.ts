@@ -134,6 +134,7 @@ export const listTugas = async (id_users: number, id_post: number) => {
     const dataTugasQuery = `
     SELECT
       post.id_post AS id_post,
+      course.id_course AS id_course,
       course.course AS course,
       users.username AS username,
       post.judul AS judul,
@@ -213,7 +214,7 @@ export const cancelSubmitTugas = async (id_users: number, id_tugas_submission: n
     const idTugasSubmission = dataCheck?.tugas[0].tugassubmission[0].id_tugas_submission
     await TugasSubmission.destroy({ where: { id_tugas_submission: idTugasSubmission } })
     deleteFileIfUploadFailed(idTugas, id_users, fileName)
-    return { status: false, message: "Pengumpulan Tugas Berhasil Di Batalkan" }
+    return { status: true, message: "Pengumpulan Tugas Berhasil Di Batalkan" }
   } catch (error) {
     throw error;
   }
@@ -266,6 +267,18 @@ export const listSubmitTugas = async (id_tugas: number,id_users:number) => {
 }
 
 export const downloadFileTugasSubmit = async (idTugas: number, idUsers:number,fileName: string) => {
+  try {
+      const filePath = join(__dirname, `../uploads/tugas/${idTugas}/${idUsers}/${fileName}`);
+      if (!existsSync(filePath)) {
+          throw new Error()
+      } else {
+          return await promises.readFile(filePath);
+      }
+  } catch (error) {
+      throw error;
+  }
+};
+export const previewFileTugas = async (idTugas: number, idUsers:number,fileName: string) => {
   try {
       const filePath = join(__dirname, `../uploads/tugas/${idTugas}/${idUsers}/${fileName}`);
       if (!existsSync(filePath)) {

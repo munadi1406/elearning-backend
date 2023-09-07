@@ -92,13 +92,11 @@ export const createTugas = async (dataPayload: ITugas) => {
             judul: `Tugas ${date}`,
         }, { transaction: t });
         // Buat data Tugas yang terkait
-        const fromDate = new Date(dataPayload.fromDate).toLocaleString()
-        const toDate = new Date(dataPayload.toDate).toLocaleString()
-        const tes = await Tugas.create({
+        await Tugas.create({
             id_post: newPost.id_post,
             deskripsi: dataPayload.deskripsi,
-            fromDate: new Date(fromDate).toISOString(),
-            toDate: new Date(toDate).toISOString(),
+            fromDate: new Date(dataPayload.fromDate).toISOString(),
+            toDate: new Date(dataPayload.toDate).toISOString(),
             file: dataPayload.file || '',
             accept: dataPayload.accept,
         }, { transaction: t });
@@ -173,7 +171,7 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
         const typePost: any = await Post.findByPk(id_post, {
             attributes: ['typePost'],
         });
-        if(!typePost){
+        if (!typePost) {
             return []
         }
 
@@ -184,7 +182,7 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
             const data = await detailPengumuman(id_post)
             return data
         } else if (typePost.typePost === 'Tugas') {
-            const tugas = await detailTugas(id_post,id_users)
+            const tugas = await detailTugas(id_post, id_users)
             return tugas
         } else {
             return [];
@@ -217,11 +215,13 @@ export const deletePost = async (id_post: number, id_users: number) => {
         }
         const idTugas: any = await Tugas.findOne({ where: { id_post: post.id_post } })
         await post.destroy({ where: { id_post } });
-        const linkFileTugas = join(__dirname, `../uploads/course/${post.id_course}/${idTugas.file}`)
-        if (existsSync(linkFileTugas)) {
-            unlinkSync(linkFileTugas)
+        if (idTugas.file) {
+            const linkFileTugas = join(__dirname, `../uploads/course/${post.id_course}/${idTugas.file}`)
+            if (existsSync(linkFileTugas)) {
+                unlinkSync(linkFileTugas)
+            }
         }
-        const linkFileTugasSubmit = join(__dirname, `../uploads/tugas/${idTugas?.id_tugas}`)
+        const linkFileTugasSubmit = join(__dirname, `../uploads/tugas/${idTugas.id_tugas}`)
         if (existsSync(linkFileTugasSubmit)) {
             await rimraf(linkFileTugasSubmit)
         }
