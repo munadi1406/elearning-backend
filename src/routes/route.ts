@@ -7,7 +7,9 @@ import { reqNewAccessToken } from '../controllers/jwtController'
 import { accessCourse } from '../middleware/accessCourse'
 import { downloadFileTugas, handleCreatePengumuman, handleCreateTugas, handleDeletePost, handleDetailPost, handleGetPost, handleUploadTugas } from '../controllers/postController'
 import { handleCancelSubmitTugas, handleDownloadFileTugasSubmit, handleGetListSubmitTugas, handleListTugas, handleNilaiInsert, handlePreviewFIleTugasSubmit } from '../controllers/tugasController'
-import { handleCreateQuis, handleGetQuiz, handleQuizTaking } from '../controllers/quizController'
+import { handleCreateQuis, handleGetQuiz, handleQuizEvaluate, handleQuizTaking } from '../controllers/quizController'
+import { handleAddAnswer } from '../controllers/answerController'
+import { handleGetScoreQuiz } from '../controllers/ScoreController'
 
 const route = express.Router()
 
@@ -55,6 +57,10 @@ route.post('/nilai',verifyTokenMiddleware,handleNilaiInsert)
 route.post('/quis',verifyTokenMiddleware,handleCreateQuis)
 route.get('/question/:idQuestion',verifyTokenMiddleware,handleGetQuiz)   //mendapatkan soal quiz
 route.get('/quiz/:idQuiz',verifyTokenMiddleware,handleQuizTaking) //mendapatkan seluruh id quiz untuk navigasi dan memulai quiz
+route.post('/answer',verifyTokenMiddleware,handleAddAnswer)
+route.get('/score/:idQuiz',verifyTokenMiddleware,handleGetScoreQuiz)
+route.get('/quiz-evaluate/:idQuiz',verifyTokenMiddleware,handleQuizEvaluate)
+
 
 route.get('/file/:idCourse/:fileName',downloadFileTugas) // download file tugas 
 route.get('/fileTugas/:idTugas/:idUsers/:fileName',handleDownloadFileTugasSubmit) // download file tugas dari users (pengumpulan)

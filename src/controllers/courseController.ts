@@ -189,7 +189,7 @@ export const handleListMemberInCouse = async (req: requestWithIdUsers, res: Resp
         }
         const idCourse: number = Number(req.params.idCourse);
         const idMember:number = Number(req.params.idMember);
-        const data = await listMemberInCourse(idCourse,idMember)
+        const data:any = await listMemberInCourse(idCourse,idMember)
         if(data.status){
             return res.status(200).json({ statusCode: 200, data:data?.data })
         }else{

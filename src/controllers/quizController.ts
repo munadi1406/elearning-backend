@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { requestWithIdUsers } from "./postController";
 import { errorResponse } from "./usersController";
-import { createQuis, getQuizTake, quizTaking } from "../model/QuizModel";
+import { createQuis, getQuizTake, quizEvaluate, quizTaking } from "../model/QuizModel";
 import { body, validationResult } from "express-validator";
 
 export const handleCreateQuis = async (req: requestWithIdUsers, res: Response) => {
@@ -58,7 +58,8 @@ export const handleCreateQuis = async (req: requestWithIdUsers, res: Response) =
 export const handleQuizTaking = async (req:requestWithIdUsers,res:Response)=>{
     try {
         const {idQuiz} = req.params
-        const data = await quizTaking(Number(idQuiz))
+        const idUsers = Number(req.user);
+        const data = await quizTaking(Number(idQuiz),idUsers)
         if(data.status){
             return res.status(200).json({statusCode:200,data:data.data})
         }else{
@@ -72,11 +73,24 @@ export const handleQuizTaking = async (req:requestWithIdUsers,res:Response)=>{
 
 export const handleGetQuiz = async (req:requestWithIdUsers,res:Response)=>{
     try {
-        console.log("running")
         const {idQuestion} = req.params
         const data = await getQuizTake(Number(idQuestion))
         return res.status(200).json({statusCode:200,data})
     } catch (error) {
+        console.log(error)
         return errorResponse(res)
     }
 }
+
+export const handleQuizEvaluate = async (req:requestWithIdUsers,res:Response)=>{
+    try {
+        const {idQuiz} = req.params
+        const idUsers = Number(req.user)
+        const data = await quizEvaluate(Number(idQuiz),idUsers) 
+        return res.status(200).json({statusCode:200,data})
+    } catch (error) {
+        console.log(error)
+        return errorResponse(res)
+    }
+}
+

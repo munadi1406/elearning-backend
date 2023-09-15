@@ -17,6 +17,7 @@ import { AnswerOption } from './schema/AnswerOption';
 import { detailQuiz } from './QuizModel';
 import { detailPengumuman } from './PengumumanModel';
 import { detailTugas } from './tugasModel';
+import { myCache } from '../middleware/cacheManager';
 
 interface IPost {
     id_users: number,
@@ -127,6 +128,11 @@ export const streamFile = async (id_course: string, fileName: string) => {
 
 export const getPost = async (id_course: number, id_post: number) => {
     try {
+        const dataCache = myCache.get(`post-${id_course}-${id_post}`)
+        if(dataCache){
+            console.log("from cache")
+            return dataCache
+        }
         const getListPost: any = await Post.findAll(
             {
                 attributes: ["id_post",
@@ -157,8 +163,13 @@ export const getPost = async (id_course: number, id_post: number) => {
         if (getListPost.length > 0) {
             lastIdPost = getListPost[getListPost.length - 1].id_post;
         }
-
-        return { lastIdPost, dataPost: getListPost };
+        const payload  = {
+            lastIdPost, 
+            dataPost: getListPost
+        }
+        const payloadCopy = JSON.parse(JSON.stringify(payload))
+        myCache.set(`post-${id_course}-${id_post}`,payloadCopy)
+        return payload;
     } catch (error) {
         throw error;
     }
@@ -166,8 +177,10 @@ export const getPost = async (id_course: number, id_post: number) => {
 
 export const getDetailPost = async (id_post: number, id_users: number) => {
     try {
-
-
+        const dataCache = myCache.get(`detailPost-${id_post}`)
+        if(dataCache){
+            return dataCache
+        }
         const typePost: any = await Post.findByPk(id_post, {
             attributes: ['typePost'],
         });
@@ -177,12 +190,15 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
 
         if (typePost.typePost === "Kuis") {
             const data = await detailQuiz(id_post)
+            myCache.set(`detailPost-${id_post}`,data)
             return data
         } else if (typePost.typePost === 'Pengumuman') {
             const data = await detailPengumuman(id_post)
+            myCache.set(`detailPost-${id_post}`,data)
             return data
         } else if (typePost.typePost === 'Tugas') {
             const tugas = await detailTugas(id_post, id_users)
+            myCache.set(`detailPost-${id_post}`,tugas)
             return tugas
         } else {
             return [];
@@ -215,15 +231,15 @@ export const deletePost = async (id_post: number, id_users: number) => {
         }
         const idTugas: any = await Tugas.findOne({ where: { id_post: post.id_post } })
         await post.destroy({ where: { id_post } });
-        if (idTugas.file) {
-            const linkFileTugas = join(__dirname, `../uploads/course/${post.id_course}/${idTugas.file}`)
+        if (idTugas) {
+            const linkFileTugas = join(__dirname, `../uploads/course/${post.id_course}/${idTugas.file ? idTugas.file : 'undinfend'}`)
             if (existsSync(linkFileTugas)) {
                 unlinkSync(linkFileTugas)
             }
-        }
-        const linkFileTugasSubmit = join(__dirname, `../uploads/tugas/${idTugas.id_tugas}`)
-        if (existsSync(linkFileTugasSubmit)) {
-            await rimraf(linkFileTugasSubmit)
+            const linkFileTugasSubmit = join(__dirname, `../uploads/tugas/${idTugas.id_tugas}`)
+            if (existsSync(linkFileTugasSubmit)) {
+                await rimraf(linkFileTugasSubmit)
+            }
         }
         return { status: true, message: "Postingan Berhasil Di Hapus" };
     } catch (error) {

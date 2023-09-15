@@ -1,0 +1,14 @@
+
+const getNilai = await QuizAnswer.count({
+            include: {
+                attributes: [],
+                model: AnswerOption,
+                as:"answerOption",
+                where: {
+                    answer_is_true: true,
+                }
+            },
+
+
+QuizAnswer.belongsTo(Question, { foreignKey: 'id_question',as:"answer",onDelete:'cascade' });
+Question.hasMany(QuizAnswer, { foreignKey: 'id_question',as:"answer" });

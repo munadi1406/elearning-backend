@@ -67,13 +67,13 @@ export const login = async (email: string, passwordAuth: string): Promise<any> =
 
         // Memeriksa apakah password sesuai
         const checkPasswordAuth = await checkPassword(passwordAuth, password);
-        
+
         if (!checkPasswordAuth) {
             return { status: false, message: "Password yang Anda masukkan salah" };
         }
         // Generate access token dan refresh token
-        const accessToken = generateAccessToken({ id_users, role, username });
-        const refreshToken = generateRefreshToken({ id_users, role, username, image });
+        const accessToken = generateAccessToken({ id_users, role, username, image });
+        const refreshToken = generateRefreshToken({ id_users, });
 
         // Update refresh token pada pengguna
         updateRefreshTokenOnTable(id_users, refreshToken)
@@ -215,7 +215,7 @@ export const changePassword = async (id_users: number, password: string, confirm
 
 
         const passwordHash = await encryptPassword(password);
-        await Users.update({ password:passwordHash }, {
+        await Users.update({ password: passwordHash }, {
             where: {
                 id_users
             }
@@ -232,15 +232,15 @@ export const changePassword = async (id_users: number, password: string, confirm
 export const changeUsername = async (id_users: number, username: string) => {
     try {
         const checkUsers = await findUsersById(id_users);
-        if(!checkUsers) return {status:false,message:"Akun Tidak Di Temukan"}
+        if (!checkUsers) return { status: false, message: "Akun Tidak Di Temukan" }
         await Users.update({ username }, { where: { id_users } })
-        return {status:true,message:"Username Berhasil Di Ubah"}
+        return { status: true, message: "Username Berhasil Di Ubah" }
     } catch (error) {
         throw error;
     }
 }
 
-const findUsersById = async (id_users:number)=>{
+const findUsersById = async (id_users: number) => {
     try {
         return await Users.findByPk(id_users)
     } catch (error) {

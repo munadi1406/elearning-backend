@@ -50,13 +50,10 @@ export const auth = async (req: Request, res: Response) => {
   const authValidationRules = [
     body('email')
       .isEmail().withMessage("Email Tidak Valid"),
-
     body('password')
       .isStrongPassword().withMessage("Password Tidak Valid")
-
   ]
   try {
-    console.time('login')
     await Promise.all(authValidationRules.map(validationRule => validationRule.run(req)));
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -65,7 +62,6 @@ export const auth = async (req: Request, res: Response) => {
     }
     const { email, password } = req.body
     const data = await login(email, password)
-    console.timeEnd('login')
     if (data.status) {
       return res.status(200).json({ statusCode: 200, message: data.message, data: data.data })
     }

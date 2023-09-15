@@ -8,6 +8,7 @@ import { rimraf } from "rimraf";
 import { join } from "path";
 import { Post } from "./schema/Post";
 import { Tugas } from "./schema/Tugas";
+import { myCache } from "../middleware/cacheManager";
 
 export const createCourse = async (data: any) => {
     const t = await sequelize.transaction()
@@ -44,6 +45,10 @@ export const createCourse = async (data: any) => {
 // idcourse digunakan untuk lazy load 
 export const getCourseByIdUsers = async (id_users: number, id_course: number) => {
     try {
+        const dataCache = myCache.get(`courseByUsers-${id_users}-${id_course}`)
+        if(dataCache){
+            return dataCache
+        }
         const courses = await Course.findAll({
             attributes: ['id_course', 'course', 'desc_course', 'academy', 'course_code',],
             include: [
@@ -65,8 +70,13 @@ export const getCourseByIdUsers = async (id_users: number, id_course: number) =>
         if (courses.length > 0) {
             lastIdCourse = courses[courses.length - 1].getDataValue('id_course');
         }
-
-        return { lastIdCourse, dataCourse: courses };
+        const payload  = {
+            lastIdCourse, 
+            dataCourse: courses
+        }
+        const payloadCopy = JSON.parse(JSON.stringify(payload))
+        myCache.set(`courseByUsers-${id_users}-${id_course}`,payloadCopy)
+        return payload;
     } catch (error) {
         throw error;
     }
@@ -80,6 +90,10 @@ Course.hasMany(CourseMember, {
 
 export const detailCourse = async (id_users: number, id_course: number) => {
     try {
+        const dataCache = myCache.get(`detailCourse-${id_users}-${id_course}`)
+        if(dataCache){
+            return dataCache
+        }
         const courseDetails = await Course.findOne({
             attributes: ['id_course', 'course', 'desc_course', 'academy', 'course_code', 'createdAt'],
             include: [
@@ -102,7 +116,8 @@ export const detailCourse = async (id_users: number, id_course: number) => {
                 id_course,
             },
         });
-
+        const payloadCopy = JSON.parse(JSON.stringify(courseDetails))
+        myCache.set(`detailCourse-${id_users}-${id_course}`,payloadCopy)
         return courseDetails;
     } catch (error) {
         throw error;
@@ -205,6 +220,10 @@ export const joinCourse = async (id_users: number, course_code: string) => {
 
 export const getCourseWhenUserAsMember = async (id_users: number, id_course: number) => {
     try {
+        const dataCache = myCache.get(`courseAsMember-${id_users}-${id_course}`)
+        if(dataCache){
+            return dataCache
+        }
         const courses = await Course.findAll({
             attributes: ['id_course', 'course', 'desc_course', 'academy', 'course_code'],
             include: [
@@ -233,8 +252,13 @@ export const getCourseWhenUserAsMember = async (id_users: number, id_course: num
         if (courses.length > 0) {
             lastIdCourse = courses[courses.length - 1].id_course;
         }
-
-        return { lastIdCourse, dataCourse: courses }
+        const payload  = {
+            lastIdCourse, 
+            dataCourse: courses
+        }
+        const payloadCopy = JSON.parse(JSON.stringify(payload))
+        myCache.set(`courseAsMember-${id_users}-${id_course}`,payloadCopy)
+        return payload;
     } catch (error) {
         throw error;
     }
@@ -242,6 +266,10 @@ export const getCourseWhenUserAsMember = async (id_users: number, id_course: num
 
 export const listMemberInCourse = async (id_course: number, id_member: number) => {
     try {
+        const dataCache = myCache.get(`courseMember-${id_course}-${id_member}`)
+        if(dataCache){
+            return { status: true, data:dataCache }
+        }
         const data = await CourseMember.findAll({
             attributes: ['id_member', 'status_member'],
             include: [
@@ -263,8 +291,13 @@ export const listMemberInCourse = async (id_course: number, id_member: number) =
             lastIdMember = data[data.length - 1].id_member;
         }
 
-        return { status: true, data: { lastIdMember, dataMember: data } }
-
+        const payload  = {
+            lastIdMember, 
+            dataMember: data
+        }
+        const payloadCopy = JSON.parse(JSON.stringify(payload))
+        myCache.set(`courseMember-${id_course}-${id_member}`,payloadCopy)
+        return { status: true, data:payload }
     } catch (error) {
         throw error
     }
