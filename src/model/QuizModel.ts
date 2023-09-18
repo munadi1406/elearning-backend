@@ -1,12 +1,14 @@
 import { sequelize } from "../config/db";
 import { myCache } from "../middleware/cacheManager";
 import { shuffleArray } from "../services/shuffleArray";
+import { createQuizLog } from "./QuizLog";
 import { QuizAnswer } from "./schema/Answer";
 import { AnswerOption } from "./schema/AnswerOption";
 import { Course } from "./schema/Course";
 import { Post } from "./schema/Post";
 import { Question } from "./schema/Question";
 import { Quiz } from "./schema/Quiz";
+import { QuizLog } from "./schema/QuizLog";
 import { Users } from "./schema/Users";
 
 
@@ -120,8 +122,7 @@ export const quizTaking = async (id_quiz: number, id_users: number) => {
     if (nowDate > new Date(endQuiz)) {
       return { status: false, message: dataQuiz }
     }
-    // Mengambil pertanyaan dari hasil query
-    // Salin objek JSON
+    await createQuizLog(id_users,id_quiz);
     const dataQuizCopy = JSON.parse(JSON.stringify(dataQuiz));
     shuffleArray(dataQuizCopy?.kuis[0]?.question || []);
     return { status: true, data: dataQuizCopy };
@@ -132,7 +133,7 @@ export const quizTaking = async (id_quiz: number, id_users: number) => {
 };
 
 
-export const getQuizTake = async (id_question: number) => {
+export const getQuizTake = async (id_question: number,id_users:number) => {
   try {
     const dataCache = myCache.get(`question-${id_question}`)
     if (dataCache) {
@@ -146,7 +147,11 @@ export const getQuizTake = async (id_question: number) => {
       }, {
         attributes: ['id_answer_option'],
         model: QuizAnswer,
-        as: 'answer'
+        as: 'answer',
+        required:false,
+        where:{
+          id_users,
+        }
       }],
       where: { id_question }
     })
@@ -271,13 +276,12 @@ export const checkQuizTimeLeft = async (id_quiz: number, id_users: number) => {
           id_quiz
         }
       })
-    const timeLeftCheck: any = await QuizAnswer.findOne({
+    const timeLeftCheck: any = await QuizLog.findOne({
       attributes: ['createdAt'],
       where: {
         id_quiz,
         id_users,
       },
-      order: [['id_answer', 'desc']]
     })
     if (timeLeftCheck) {
       const endTime = new Date(timeLeftCheck.createdAt);

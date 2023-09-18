@@ -74,7 +74,8 @@ export const handleQuizTaking = async (req:requestWithIdUsers,res:Response)=>{
 export const handleGetQuiz = async (req:requestWithIdUsers,res:Response)=>{
     try {
         const {idQuestion} = req.params
-        const data = await getQuizTake(Number(idQuestion))
+        const idUsers = Number(req.user)
+        const data = await getQuizTake(Number(idQuestion),idUsers)
         return res.status(200).json({statusCode:200,data})
     } catch (error) {
         console.log(error)

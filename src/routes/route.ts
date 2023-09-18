@@ -10,6 +10,7 @@ import { handleCancelSubmitTugas, handleDownloadFileTugasSubmit, handleGetListSu
 import { handleCreateQuis, handleGetQuiz, handleQuizEvaluate, handleQuizTaking } from '../controllers/quizController'
 import { handleAddAnswer } from '../controllers/answerController'
 import { handleGetScoreQuiz } from '../controllers/ScoreController'
+import { handleCreateComments, handleDeleteComment, handleUpdateComment } from '../controllers/CommentsController'
 
 const route = express.Router()
 
@@ -53,6 +54,9 @@ route.get('/tugas/:idPost',verifyTokenMiddleware,handleListTugas)
 
 route.post('/nilai',verifyTokenMiddleware,handleNilaiInsert)
 
+route.post('/comment',verifyTokenMiddleware,handleCreateComments)
+route.put('/comment',verifyTokenMiddleware,handleUpdateComment)
+route.delete('/comment/:idComment',verifyTokenMiddleware,handleDeleteComment)
 
 route.post('/quis',verifyTokenMiddleware,handleCreateQuis)
 route.get('/question/:idQuestion',verifyTokenMiddleware,handleGetQuiz)   //mendapatkan soal quiz

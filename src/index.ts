@@ -4,6 +4,8 @@ import "dotenv/config.js"
 import cors from 'cors'
 import { sync } from './config/db';
 import compression from 'compression';
+import { createServer } from 'http';
+import { WebSocketServer } from './websocket/WebSockets';
 
 
 
@@ -25,9 +27,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/', route)
 
 const port: number = 5001;
-app.listen(port, async () => {
+export const server = createServer(app);
+
+export const webSocketInit = new WebSocketServer(server)
+
+
+server.listen(port, async () => {
   console.log(`Server is running on port ${port}`);
 });
-
 
 

@@ -77,6 +77,7 @@ export const login = async (email: string, passwordAuth: string): Promise<any> =
 
         // Update refresh token pada pengguna
         updateRefreshTokenOnTable(id_users, refreshToken)
+        
 
         return { status: true, message: "Login Berhasil", data: { accessToken, refreshToken } };
     } catch (error) {

@@ -63,7 +63,7 @@ export const getScoreQuiz = async (id_quiz: number, id_users: number) => {
                 id_users
             }
         })
-        if (!data) return { message: "Anda Belum Selesai Mengerjakan Quiz" }
+        if (!data) return { message: "Anda Belum Mengerjakan Quiz" }
         const getQuizCount = await Question.count({
             where: {
                 id_quiz
@@ -84,10 +84,10 @@ export const getScoreQuiz = async (id_quiz: number, id_users: number) => {
         if (getQuizCount !== checkAnswerIsFinish) {
             const checkTimeLeft = await checkQuizTimeLeft(id_quiz, id_users)
             const dataCache = myCache.get(`score-${id_quiz}-${id_users}`)
-            if (dataCache) {
-                return dataCache
-            }
             if (!checkTimeLeft) {
+                if(dataCache){
+                    return dataCache
+                }
                 myCache.set(`score-${id_quiz}-${id_users}`, payload)
                 return { terjawab: checkAnswerIsFinish, soal: getQuizCount, score: data.score }
             }

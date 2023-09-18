@@ -190,15 +190,18 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
 
         if (typePost.typePost === "Kuis") {
             const data = await detailQuiz(id_post)
-            myCache.set(`detailPost-${id_post}`,data)
+          const dataCopy = JSON.parse(JSON.stringify(data))
+            myCache.set(`detailPost-${id_post}`,dataCopy)
             return data
         } else if (typePost.typePost === 'Pengumuman') {
             const data = await detailPengumuman(id_post)
-            myCache.set(`detailPost-${id_post}`,data)
+           const dataCopy = JSON.parse(JSON.stringify(data))
+            myCache.set(`detailPost-${id_post}`,dataCopy)
             return data
         } else if (typePost.typePost === 'Tugas') {
             const tugas = await detailTugas(id_post, id_users)
-            myCache.set(`detailPost-${id_post}`,tugas)
+           const dataCopy = JSON.parse(JSON.stringify(tugas))
+            myCache.set(`detailPost-${id_post}`,dataCopy)
             return tugas
         } else {
             return [];
