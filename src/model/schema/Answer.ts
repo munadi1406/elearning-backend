@@ -33,7 +33,7 @@ export const QuizAnswer = sequelize.define('answer', {
     indexes: [
         {
             unique:true,
-            fields: ['id_quiz','id_question','id_answer_option'],
+            fields: ['id_users','id_question','id_answer_option'],
             name: 'idx_quiz_question_answer',
         },
         {

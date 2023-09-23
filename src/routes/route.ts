@@ -11,6 +11,7 @@ import { handleCreateQuis, handleGetQuiz, handleQuizEvaluate, handleQuizTaking }
 import { handleAddAnswer } from '../controllers/answerController'
 import { handleGetScoreQuiz } from '../controllers/ScoreController'
 import { handleCreateComments, handleDeleteComment, handleUpdateComment } from '../controllers/CommentsController'
+import {  handleCreatePresensi, handleRecordPresensi } from '../controllers/presensiControllers'
 
 const route = express.Router()
 
@@ -54,9 +55,14 @@ route.get('/tugas/:idPost',verifyTokenMiddleware,handleListTugas)
 
 route.post('/nilai',verifyTokenMiddleware,handleNilaiInsert)
 
-route.post('/comment',verifyTokenMiddleware,handleCreateComments)
+route.post('/comment',verifyTokenMiddleware,handleCreateComments) //opsi jika tidak menggunakan websocket
 route.put('/comment',verifyTokenMiddleware,handleUpdateComment)
 route.delete('/comment/:idComment',verifyTokenMiddleware,handleDeleteComment)
+
+
+route.post('/presensi',verifyTokenMiddleware,accessCourse,handleCreatePresensi)
+route.post('/presensi/record',verifyTokenMiddleware,handleRecordPresensi)
+
 
 route.post('/quis',verifyTokenMiddleware,handleCreateQuis)
 route.get('/question/:idQuestion',verifyTokenMiddleware,handleGetQuiz)   //mendapatkan soal quiz

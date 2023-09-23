@@ -1,5 +1,5 @@
 import { Server } from 'ws';
-import { getCommentByPostId } from '../model/CommentsModel';
+import { createComments, getCommentByPostId } from '../model/CommentsModel';
 import { verify } from 'jsonwebtoken';
 import { verifyAccessToken } from '../services/jwtService';
 
@@ -28,7 +28,7 @@ export class WebSocketServer {
       try {
         // Verifikasi token JWT dengan kunci rahasia yang benar
         const token = jwtToken.split(' ')
-        const decodedToken = verifyAccessToken(token[1]);
+        const decodedToken:any = verifyAccessToken(token[1]);
   
         if (messageData.action === 'getComments') {
           try {
@@ -37,8 +37,25 @@ export class WebSocketServer {
           } catch (error) {
             console.error('Error fetching comments:', error);
           }
-        } else {
-          ws.send("Invalid Action"); // Tindakan tidak valid
+        } else if(messageData.action === 'postComments') {
+          const {idPost, comment} = messageData.data
+          if (typeof idPost !== 'number' || isNaN(idPost)) {
+            return ws.send(JSON.stringify({ action: 'errorMessage', message: "ID Post tidak valid" }));
+          }
+          
+          if (typeof comment !== 'string' || comment.trim() === '') {
+            return ws.send(JSON.stringify({ action: 'errorMessage', message: "Komentar Kosong" }));
+          }
+          const idUsers:number = Number(decodedToken.id_users);
+          const create = await createComments({
+            id_users: idUsers,
+            id_post: idPost,
+            comment: comment
+          });
+          if(!create){
+            return  ws.send(JSON.stringify({ action: 'postComments', message:"Failed Post Comment" }));
+          }
+          ws.send(JSON.stringify({ action: 'errorMessage', message:"Success Post Comment" }));
         }
       } catch (error) {
         ws.send("Unauthorized: Invalid JWT");

@@ -83,7 +83,6 @@ export const handleInsertTugas = async (req: requestWithIdUsers, res: Response) 
 export const handleCreateTugas = (req: Request, res: Response,) => {
     try {
         uploadfileTugas(req, res, async (err: any) => {
-            console.log(err);
             if (err instanceof MulterError) {
                 if (err.code === 'LIMIT_FILE_SIZE') {
                     return res.status(400).json({ statusCode: 400, message: 'Ukuran file melebihi batas maksimum 5MB.' });

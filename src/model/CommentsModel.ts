@@ -1,3 +1,4 @@
+import { col } from "sequelize";
 import { webSocketInit } from ".."
 import { Comments } from "./schema/Comments"
 import { Users } from "./schema/Users"
@@ -14,10 +15,12 @@ export const createComments = async (payload: payloadIt) => {
         const data: any = await Comments.create({ ...payload });
         if (data) {
             const newComment = await Comments.findOne({
-                attributes: ['id_comments', 'comment', 'createdAt', 'updatedAt'],
+                attributes: ['id_comments', 'comment', 'createdAt', 'updatedAt',
+                [col('user.username'), 'id_tugas'],
+                [col('user.id_users'), 'id_users'],],
                 include: {
                     model: Users,
-                    attributes: ['username'],
+                    attributes: [],
                     as: "user"
                 },
                 where: {
@@ -39,15 +42,18 @@ export const createComments = async (payload: payloadIt) => {
 export const getCommentByPostId = async (id_post: number) => {
     try {
         const data = await Comments.findAll({
-            attributes: ['id_comments', 'comment', 'createdAt', 'updatedAt'],
+            attributes: ['id_comments', 'comment', 'createdAt', 'updatedAt',
+                [col('user.username'), 'id_tugas'],
+                [col('user.id_users'), 'id_users'],],
             include: {
                 model: Users,
-                attributes: ['username'],
+                attributes: [],
                 as: "user"
             },
             where: {
                 id_post
             },
+            order: [['id_comments', 'asc']],
             raw: true
         })
         return data
