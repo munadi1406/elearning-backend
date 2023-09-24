@@ -18,6 +18,7 @@ import { detailQuiz } from './QuizModel';
 import { detailPengumuman } from './PengumumanModel';
 import { detailTugas } from './tugasModel';
 import { myCache } from '../middleware/cacheManager';
+import { detailPresensi } from './Presensi';
 
 interface IPost {
     id_users: number,
@@ -200,11 +201,16 @@ export const getDetailPost = async (id_post: number, id_users: number) => {
             return data
         } else if (typePost.typePost === 'Tugas') {
             const tugas = await detailTugas(id_post, id_users)
-           const dataCopy = JSON.parse(JSON.stringify(tugas))
+            const dataCopy = JSON.parse(JSON.stringify(tugas))
             myCache.set(`detailPost-${id_post}`,dataCopy)
             return tugas
-        } else {
-            return [];
+        } else if(typePost.typePost === 'Presensi'){
+            const presensi = await detailPresensi(id_post)
+            const dataPresensiCopy = JSON.parse(JSON.stringify(presensi))
+            myCache.set(`detailPost-${id_post}`,dataPresensiCopy)
+            return presensi
+        }else{
+            return []
         }
         // return post;
     } catch (error) {

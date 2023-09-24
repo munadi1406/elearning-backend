@@ -91,12 +91,12 @@ export const detailQuiz = async (id_post: number) => {
   }
 }
 
-export const quizTaking = async (id_quiz: number, id_users: number) => {
+export const quizTaking = async (id_quiz: number, id_users: number,id_course:number) => {
   try {
     const dataQuiz: any = await Post.findOne({
       attributes: ['id_post', 'judul'],
       include: {
-        attributes: ['id_quiz', 'deskripsi', 'duration', 'start_quiz', 'end_quiz'],
+        attributes: ['id_quiz','duration', 'start_quiz', 'end_quiz'],
         model: Quiz,
         as: "kuis",
         required: true,

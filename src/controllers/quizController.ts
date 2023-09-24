@@ -57,9 +57,9 @@ export const handleCreateQuis = async (req: requestWithIdUsers, res: Response) =
 
 export const handleQuizTaking = async (req:requestWithIdUsers,res:Response)=>{
     try {
-        const {idQuiz} = req.params
+        const {idQuiz,idCourse} = req.params
         const idUsers = Number(req.user);
-        const data = await quizTaking(Number(idQuiz),idUsers)
+        const data = await quizTaking(Number(idQuiz),idUsers,Number(idCourse))
         if(data.status){
             return res.status(200).json({statusCode:200,data:data.data})
         }else{

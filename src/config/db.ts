@@ -10,7 +10,7 @@ export const sequelize = new Sequelize('elearningverse', 'root', '', {
 export const sync = async ()=>{
   try {
     await sequelize.authenticate()
-    await sequelize.sync()
+    // await sequelize.sync()
   } catch (error) {
     throw error
   }

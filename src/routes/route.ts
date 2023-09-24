@@ -11,7 +11,7 @@ import { handleCreateQuis, handleGetQuiz, handleQuizEvaluate, handleQuizTaking }
 import { handleAddAnswer } from '../controllers/answerController'
 import { handleGetScoreQuiz } from '../controllers/ScoreController'
 import { handleCreateComments, handleDeleteComment, handleUpdateComment } from '../controllers/CommentsController'
-import {  handleCreatePresensi, handleRecordPresensi } from '../controllers/presensiControllers'
+import {  handleCreatePresensi,handleDetailPresensiCredentials, handleDetailPresensiForUpdate, handleGetAllMemberForPresensiManual, handleGetPresensiType, handleManualPresensi, handleRecordPresensi, handleReportPresensi, handleUpdateGpsLocationPresensi, handleUpdatePresensi, handleUpdateTokenPresensi } from '../controllers/presensiControllers'
 
 const route = express.Router()
 
@@ -42,7 +42,7 @@ route.get('/course/listmember/:idCourse/:idMember', verifyTokenMiddleware,access
 
 
 
-route.get('/post/:idPost', verifyTokenMiddleware, handleDetailPost)
+route.get('/post/:idPost', verifyTokenMiddleware, handleDetailPost)//untuk semua jenis post (tugas,pengumuman,quiz,presensi)
 route.get('/post/:idCourse/:idPost', verifyTokenMiddleware, accessCourse, handleGetPost)
 route.post('/pengumuman', verifyTokenMiddleware, accessCourse, handleCreatePengumuman)
 route.delete('/post/:idPost',verifyTokenMiddleware,handleDeletePost)
@@ -61,12 +61,22 @@ route.delete('/comment/:idComment',verifyTokenMiddleware,handleDeleteComment)
 
 
 route.post('/presensi',verifyTokenMiddleware,accessCourse,handleCreatePresensi)
+route.get('/presensi/update/:idCourse/:idPresensi',verifyTokenMiddleware,accessCourse,handleDetailPresensiForUpdate)
+route.put('/presensi',verifyTokenMiddleware,accessCourse,handleUpdatePresensi) //untuk update start date dan end date
+route.put('/presensi/update/gps',verifyTokenMiddleware,accessCourse,handleUpdateGpsLocationPresensi)
+route.put('/presensi/update/token',verifyTokenMiddleware,accessCourse,handleUpdateTokenPresensi)
+route.get('/presensi/type/:idPresensi',verifyTokenMiddleware,handleGetPresensiType)
+route.get('/presensi/manual/:idCourse',verifyTokenMiddleware,accessCourse,handleGetAllMemberForPresensiManual) //mendapatan seluruh list member untuk presensi manual oleh instruktur
+route.post('/presensi/manual',verifyTokenMiddleware,handleManualPresensi)
+route.get('/presensi/:idCourse/:idPresensi',verifyTokenMiddleware,handleDetailPresensiCredentials)
+route.get('/presensi/report/:idPresensi/:idCourse',verifyTokenMiddleware,handleReportPresensi)
 route.post('/presensi/record',verifyTokenMiddleware,handleRecordPresensi)
 
 
+
 route.post('/quis',verifyTokenMiddleware,handleCreateQuis)
-route.get('/question/:idQuestion',verifyTokenMiddleware,handleGetQuiz)   //mendapatkan soal quiz
 route.get('/quiz/:idQuiz',verifyTokenMiddleware,handleQuizTaking) //mendapatkan seluruh id quiz untuk navigasi dan memulai quiz
+route.get('/question/:idQuestion/:idCourse',verifyTokenMiddleware,handleGetQuiz)   //mendapatkan soal quiz
 route.post('/answer',verifyTokenMiddleware,handleAddAnswer)
 route.get('/score/:idQuiz',verifyTokenMiddleware,handleGetScoreQuiz)
 route.get('/quiz-evaluate/:idQuiz',verifyTokenMiddleware,handleQuizEvaluate)
