@@ -99,7 +99,6 @@ export const handleImageUpload = (req: Request, res: Response) => {
         return res.status(400).json({ statusCode: 400, message: 'Foto Harus Berupa Png, jpg, jpeg, webp.' });
 
       }
-
       await uploadPhotoProfileUser(req, res);
     });
   } catch (error) {
